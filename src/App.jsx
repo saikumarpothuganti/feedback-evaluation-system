@@ -18,7 +18,7 @@ function App() {
   return (
     <AuthProvider>
       <FeedbackProvider>
-        <Router>
+  <Router basename={import.meta.env.BASE_URL}>
           <div className="App">
             <Routes>
               <Route path="/" element={<Login />} />
@@ -97,7 +97,7 @@ function App() {
               />
             </Routes>
           </div>
-        </Router>
+  </Router>
       </FeedbackProvider>
     </AuthProvider>
   );
