@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import * as FeedbackDB from '../utils/feedbackDB.js';
 
 const FeedbackContext = createContext();
 
@@ -27,62 +28,58 @@ export const FeedbackProvider = ({ children }) => {
   const [feedbacks, setFeedbacks] = useState([]);
 
   useEffect(() => {
-    // Load feedbacks from localStorage on component mount
-    const data = localStorage.getItem(STORAGE_KEY);
-    if (data) {
-      const parsedData = JSON.parse(data);
-      setFeedbacks(parsedData.feedbacks || []);
-    }
+    // Load feedbacks from the new database
+    loadFeedbacks();
   }, []);
 
-  const saveToLocalStorage = (data) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  const loadFeedbacks = () => {
+    const allFeedbacks = FeedbackDB.getAllFeedbacks();
+    setFeedbacks(allFeedbacks);
   };
 
   const addFeedback = (feedback) => {
     const newFeedback = {
       ...feedback,
-      id: Date.now(),
       timestamp: new Date().toISOString(),
-      date: new Date().toLocaleDateString()
+      date: new Date().toLocaleDateString(),
+      status: 'pending'
     };
     
-    const updatedFeedbacks = [...feedbacks, newFeedback];
-    setFeedbacks(updatedFeedbacks);
-    saveToLocalStorage({ feedbacks: updatedFeedbacks });
+    FeedbackDB.addFeedback(newFeedback);
+    loadFeedbacks();
+  };
+
+  const updateFeedback = (id, updates) => {
+    FeedbackDB.updateFeedback(id, updates);
+    loadFeedbacks();
+  };
+
+  const deleteFeedback = (id) => {
+    FeedbackDB.deleteFeedback(id);
+    loadFeedbacks();
   };
 
   const getFeedbackStats = () => {
-    const total = feedbacks.length;
-    const studentFeedback = feedbacks.filter(f => f.userRole === 'student').length;
-    const facultyFeedback = feedbacks.filter(f => f.userRole === 'faculty').length;
-    
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
-    const monthlyFeedback = feedbacks.filter(f => {
-      const feedbackDate = new Date(f.timestamp);
-      return feedbackDate.getMonth() === currentMonth && 
-             feedbackDate.getFullYear() === currentYear;
-    }).length;
-
-    return {
-      total,
-      studentFeedback,
-      facultyFeedback,
-      monthlyFeedback
-    };
+    return FeedbackDB.getFeedbackStats();
   };
 
   const getFilteredFeedbacks = (filter = 'all') => {
     if (filter === 'all') return feedbacks;
-    return feedbacks.filter(f => f.userRole === filter);
+    return FeedbackDB.getFilteredFeedbacks({ userRole: filter });
+  };
+
+  const searchFeedbacks = (keyword) => {
+    return FeedbackDB.searchFeedbacks(keyword);
   };
 
   const value = {
     feedbacks,
     addFeedback,
+    updateFeedback,
+    deleteFeedback,
     getFeedbackStats,
     getFilteredFeedbacks,
+    searchFeedbacks,
     IMPROVEMENT_LABELS
   };
 
