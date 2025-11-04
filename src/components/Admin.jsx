@@ -1,60 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useFeedback } from '../context/FeedbackContext.jsx';
 import Navbar from './Navbar.jsx';
-import * as FeedbackDB from '../utils/feedbackDB.js';
 
 const Admin = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [displayedFeedbacks, setDisplayedFeedbacks] = useState([]);
-  const [stats, setStats] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFeedback, setSelectedFeedback] = useState(null);
-  const [showExportModal, setShowExportModal] = useState(false);
   
-  const { feedbacks, getFilteredFeedbacks, updateFeedback, deleteFeedback } = useFeedback();
+  const { feedbacks, getFilteredFeedbacks } = useFeedback();
 
   useEffect(() => {
-    try {
-      const dbStats = FeedbackDB.getFeedbackStats();
-      setStats(dbStats || { total: 0, byStatus: {}, avgRating: 0 });
-      
-      let filtered = getFilteredFeedbacks(activeFilter);
-      
-      if (searchTerm.trim()) {
-        filtered = FeedbackDB.searchFeedbacks(searchTerm);
-        if (activeFilter !== 'all') {
-          filtered = filtered.filter(f => f.userRole === activeFilter);
-        }
-      }
-      
-      setDisplayedFeedbacks(filtered || []);
-    } catch (error) {
-      console.error('Error loading admin data:', error);
-      setStats({ total: 0, byStatus: {}, avgRating: 0 });
-      setDisplayedFeedbacks([]);
-    }
-  }, [feedbacks, activeFilter, searchTerm, getFilteredFeedbacks]);
-
-  const handleStatusUpdate = (feedbackId, newStatus) => {
-    updateFeedback(feedbackId, { status: newStatus });
-  };
-
-  const handleDelete = (feedbackId) => {
-    if (window.confirm('Are you sure you want to delete this feedback?')) {
-      deleteFeedback(feedbackId);
-    }
-  };
-
-  const handleExport = () => {
-    const jsonData = FeedbackDB.exportFeedbacks();
-    const blob = new Blob([jsonData], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `feedback-export-${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+    setDisplayedFeedbacks(getFilteredFeedbacks(activeFilter));
+  }, [feedbacks, activeFilter, getFilteredFeedbacks]);
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
@@ -111,14 +67,6 @@ const Admin = () => {
     }
   };
 
-  const getStatusBadgeClass = (status) => {
-    switch(status) {
-      case 'resolved': return 'status-badge resolved';
-      case 'reviewed': return 'status-badge reviewed';
-      default: return 'status-badge pending';
-    }
-  };
-
   return (
     <div className="admin-page">
       <Navbar />
@@ -127,43 +75,6 @@ const Admin = () => {
         <div className="card admin-card">
           <h2>Admin Dashboard</h2>
           
-          {/* Stats Overview */}
-          <div className="stats-overview">
-            <div className="stat-card">
-              <h3>{stats?.total || 0}</h3>
-              <p>Total Feedbacks</p>
-            </div>
-            <div className="stat-card">
-              <h3>{stats?.byStatus?.pending || 0}</h3>
-              <p>Pending</p>
-            </div>
-            <div className="stat-card">
-              <h3>{stats?.byStatus?.reviewed || 0}</h3>
-              <p>Reviewed</p>
-            </div>
-            <div className="stat-card">
-              <h3>{stats?.byStatus?.resolved || 0}</h3>
-              <p>Resolved</p>
-            </div>
-            <div className="stat-card">
-              <h3>{stats?.avgRating ? stats.avgRating.toFixed(1) : 'N/A'}</h3>
-              <p>Avg Rating</p>
-            </div>
-          </div>
-          
-          {/* Search Bar */}
-          <div className="search-bar">
-            <input
-              type="text"
-              placeholder="Search feedbacks by keyword..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-            <button onClick={handleExport} className="btn export-btn">
-              📥 Export Data
-            </button>
-          </div>
           <div className="dashboard-header">
             <h3>Feedback Submissions</h3>
             <div className="filter-options">
@@ -195,17 +106,10 @@ const Admin = () => {
               displayedFeedbacks.map((feedback) => (
                 <div key={feedback.id} className="feedback-item">
                   <div className="feedback-header">
-                    <div>
-                      <h4>{getFeedbackTitle(feedback)}</h4>
-                      <div className="feedback-badges">
-                        <span className={getBadgeClass(feedback.userRole)}>
-                          {feedback.userRole}
-                        </span>
-                        <span className={getStatusBadgeClass(feedback.status || 'pending')}>
-                          {feedback.status || 'pending'}
-                        </span>
-                      </div>
-                    </div>
+                    <h4>{getFeedbackTitle(feedback)}</h4>
+                    <span className={getBadgeClass(feedback.userRole)}>
+                      {feedback.userRole}
+                    </span>
                   </div>
                   
                   <div className="feedback-meta">
@@ -251,25 +155,6 @@ const Admin = () => {
                       )}
                     </div>
                   )}
-                  
-                  {/* Action Buttons */}
-                  <div className="feedback-actions">
-                    <select 
-                      value={feedback.status || 'pending'}
-                      onChange={(e) => handleStatusUpdate(feedback.id, e.target.value)}
-                      className="status-select"
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="reviewed">Reviewed</option>
-                      <option value="resolved">Resolved</option>
-                    </select>
-                    <button 
-                      onClick={() => handleDelete(feedback.id)}
-                      className="btn delete-btn"
-                    >
-                      🗑️ Delete
-                    </button>
-                  </div>
                 </div>
               ))
             )}

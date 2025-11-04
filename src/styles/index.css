@@ -334,11 +334,6 @@ body.admin-page {
     background-attachment: fixed;
 }
 
-.admin-page .container {
-    align-items: flex-start;
-    padding-top: 40px;
-}
-
 body.faculty-page {
     background: linear-gradient(135deg, rgba(65, 105, 225, 0.8), rgba(138, 43, 226, 0.8)),
                 url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
@@ -573,15 +568,7 @@ body.faculty-page {
 
 /* Admin Dashboard Styles */
 .admin-card {
-    max-width: 1200px;
-    width: 100%;
-}
-
-.stats-overview {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-    margin: 20px 0;
+    max-width: 800px;
 }
 
 .dashboard-header {
@@ -961,130 +948,6 @@ body.help-page {
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-}
-
-/* Search Bar */
-.search-bar {
-    display: flex;
-    gap: 10px;
-    margin: 20px 0;
-    align-items: center;
-}
-
-.search-input {
-    flex: 1;
-    padding: 12px 15px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.search-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: rgba(255, 255, 255, 0.5);
-    background: rgba(255, 255, 255, 0.25);
-}
-
-.export-btn {
-    padding: 12px 20px;
-    background: rgba(76, 175, 80, 0.8);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-.export-btn:hover {
-    background: rgba(76, 175, 80, 1);
-    transform: translateY(-2px);
-}
-
-/* Status Badges */
-.feedback-badges {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.status-badge {
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.status-badge.pending {
-    background: rgba(255, 193, 7, 0.8);
-    color: white;
-}
-
-.status-badge.reviewed {
-    background: rgba(33, 150, 243, 0.8);
-    color: white;
-}
-
-.status-badge.resolved {
-    background: rgba(76, 175, 80, 0.8);
-    color: white;
-}
-
-/* Feedback Actions */
-.feedback-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    align-items: center;
-    padding-top: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.status-select {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.status-select:focus {
-    outline: none;
-    border-color: rgba(255, 255, 255, 0.5);
-    background: rgba(255, 255, 255, 0.25);
-}
-
-.status-select option {
-    background: rgba(50, 50, 70, 0.95);
-    color: white;
-}
-
-.delete-btn {
-    padding: 8px 16px;
-    background: rgba(244, 67, 54, 0.8);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-}
-
-.delete-btn:hover {
-    background: rgba(244, 67, 54, 1);
-    transform: translateY(-2px);
 }
 
 .stat-number {
