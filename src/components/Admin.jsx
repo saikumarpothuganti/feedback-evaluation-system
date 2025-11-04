@@ -14,19 +14,25 @@ const Admin = () => {
   const { feedbacks, getFilteredFeedbacks, updateFeedback, deleteFeedback } = useFeedback();
 
   useEffect(() => {
-    const dbStats = FeedbackDB.getFeedbackStats();
-    setStats(dbStats);
-    
-    let filtered = getFilteredFeedbacks(activeFilter);
-    
-    if (searchTerm.trim()) {
-      filtered = FeedbackDB.searchFeedbacks(searchTerm);
-      if (activeFilter !== 'all') {
-        filtered = filtered.filter(f => f.userRole === activeFilter);
+    try {
+      const dbStats = FeedbackDB.getFeedbackStats();
+      setStats(dbStats || { total: 0, byStatus: {}, avgRating: 0 });
+      
+      let filtered = getFilteredFeedbacks(activeFilter);
+      
+      if (searchTerm.trim()) {
+        filtered = FeedbackDB.searchFeedbacks(searchTerm);
+        if (activeFilter !== 'all') {
+          filtered = filtered.filter(f => f.userRole === activeFilter);
+        }
       }
+      
+      setDisplayedFeedbacks(filtered || []);
+    } catch (error) {
+      console.error('Error loading admin data:', error);
+      setStats({ total: 0, byStatus: {}, avgRating: 0 });
+      setDisplayedFeedbacks([]);
     }
-    
-    setDisplayedFeedbacks(filtered);
   }, [feedbacks, activeFilter, searchTerm, getFilteredFeedbacks]);
 
   const handleStatusUpdate = (feedbackId, newStatus) => {
@@ -122,30 +128,28 @@ const Admin = () => {
           <h2>Admin Dashboard</h2>
           
           {/* Stats Overview */}
-          {stats && (
-            <div className="stats-overview">
-              <div className="stat-card">
-                <h3>{stats.total}</h3>
-                <p>Total Feedbacks</p>
-              </div>
-              <div className="stat-card">
-                <h3>{stats.byStatus?.pending || 0}</h3>
-                <p>Pending</p>
-              </div>
-              <div className="stat-card">
-                <h3>{stats.byStatus?.reviewed || 0}</h3>
-                <p>Reviewed</p>
-              </div>
-              <div className="stat-card">
-                <h3>{stats.byStatus?.resolved || 0}</h3>
-                <p>Resolved</p>
-              </div>
-              <div className="stat-card">
-                <h3>{stats.avgRating?.toFixed(1) || 'N/A'}</h3>
-                <p>Avg Rating</p>
-              </div>
+          <div className="stats-overview">
+            <div className="stat-card">
+              <h3>{stats?.total || 0}</h3>
+              <p>Total Feedbacks</p>
             </div>
-          )}
+            <div className="stat-card">
+              <h3>{stats?.byStatus?.pending || 0}</h3>
+              <p>Pending</p>
+            </div>
+            <div className="stat-card">
+              <h3>{stats?.byStatus?.reviewed || 0}</h3>
+              <p>Reviewed</p>
+            </div>
+            <div className="stat-card">
+              <h3>{stats?.byStatus?.resolved || 0}</h3>
+              <p>Resolved</p>
+            </div>
+            <div className="stat-card">
+              <h3>{stats?.avgRating ? stats.avgRating.toFixed(1) : 'N/A'}</h3>
+              <p>Avg Rating</p>
+            </div>
+          </div>
           
           {/* Search Bar */}
           <div className="search-bar">
