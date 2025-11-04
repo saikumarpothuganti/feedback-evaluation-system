@@ -568,7 +568,15 @@ body.faculty-page {
 
 /* Admin Dashboard Styles */
 .admin-card {
-    max-width: 800px;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
 }
 
 .dashboard-header {
