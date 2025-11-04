@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
 const Login = () => {
@@ -89,6 +89,9 @@ const Login = () => {
                 Admin
               </button>
             </div>
+            <div className="info-text" style={{ marginTop: 16 }}>
+              <p>Don't have an account? <Link to="/register" style={{ color: '#ffd700' }}>Create one</Link></p>
+            </div>
           </div>
         ) : (
           <div id="loginForm-container">
@@ -121,6 +124,7 @@ const Login = () => {
               <p>- Click Faculty and login for Faculty access</p>
               <p>- Click Admin or use a username containing "admin" for Admin access</p>
               <p>- Click Student or use any other username for Student access</p>
+              <p>New user? <Link to="/register" style={{ color: '#ffd700' }}>Register</Link></p>
             </div>
             <button 
               type="button" 

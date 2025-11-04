@@ -15,6 +15,7 @@ import Notifications from './components/Notifications.jsx';
 import Help from './components/Help.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Chatbot from './components/Chatbot.jsx';
+import Register from './components/Register.jsx';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
               <Route 
                 path="/dashboard" 
                 element={
