@@ -11,13 +11,9 @@ const Admin = () => {
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [showExportModal, setShowExportModal] = useState(false);
   
-  const { feedbacks, getFilteredFeedbacks } = useFeedback();
+  const { feedbacks, getFilteredFeedbacks, updateFeedback, deleteFeedback } = useFeedback();
 
   useEffect(() => {
-    loadData();
-  }, [feedbacks, activeFilter, searchTerm]);
-
-  const loadData = () => {
     const dbStats = FeedbackDB.getFeedbackStats();
     setStats(dbStats);
     
@@ -31,17 +27,15 @@ const Admin = () => {
     }
     
     setDisplayedFeedbacks(filtered);
-  };
+  }, [feedbacks, activeFilter, searchTerm, getFilteredFeedbacks]);
 
   const handleStatusUpdate = (feedbackId, newStatus) => {
-    FeedbackDB.updateFeedback(feedbackId, { status: newStatus });
-    loadData();
+    updateFeedback(feedbackId, { status: newStatus });
   };
 
   const handleDelete = (feedbackId) => {
     if (window.confirm('Are you sure you want to delete this feedback?')) {
-      FeedbackDB.deleteFeedback(feedbackId);
-      loadData();
+      deleteFeedback(feedbackId);
     }
   };
 
