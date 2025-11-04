@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { FiSun, FiMoon } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useTheme } from '../context/ThemeContext.jsx';
 import logo from '../assets/images/logo.svg';
 
 const Navbar = ({ title = "Student Feedback System", showAllLinks = false }) => {
   const { logout, userRole } = useAuth();
+  const { isDarkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleLogout = (e) => {
@@ -41,6 +44,16 @@ const Navbar = ({ title = "Student Feedback System", showAllLinks = false }) => 
             <li><Link to="/help">Help</Link></li>
           </>
         )}
+        <li>
+          <button 
+            onClick={toggleTheme} 
+            className="theme-toggle"
+            aria-label="Toggle dark mode"
+            title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {isDarkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
+          </button>
+        </li>
         {!showAllLinks && (
           <li><a href="#" onClick={handleSwitchRole}>Switch Role</a></li>
         )}

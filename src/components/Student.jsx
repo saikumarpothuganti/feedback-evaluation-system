@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useFeedback } from '../context/FeedbackContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useForm } from '../hooks/useForm.js';
 import Navbar from './Navbar.jsx';
 
 const Student = () => {

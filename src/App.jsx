@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { FeedbackProvider } from './context/FeedbackContext.jsx';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 import Login from './components/Login.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import Student from './components/Student.jsx';
@@ -13,12 +14,14 @@ import Settings from './components/Settings.jsx';
 import Notifications from './components/Notifications.jsx';
 import Help from './components/Help.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import Chatbot from './components/Chatbot.jsx';
 
 function App() {
   return (
-    <AuthProvider>
-      <FeedbackProvider>
-  <Router basename={import.meta.env.BASE_URL}>
+    <ThemeProvider>
+      <AuthProvider>
+        <FeedbackProvider>
+          <Router basename={import.meta.env.BASE_URL}>
           <div className="App">
             <Routes>
               <Route path="/" element={<Login />} />
@@ -96,10 +99,13 @@ function App() {
                 } 
               />
             </Routes>
+            {/* Floating assistant available on all routes */}
+            <Chatbot />
           </div>
-  </Router>
-      </FeedbackProvider>
-    </AuthProvider>
+        </Router>
+        </FeedbackProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
