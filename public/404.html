@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redirecting…</title>
+    <meta http-equiv="refresh" content="0; url=/feedback-evaluation-system/" />
+    <script>
+      // Single Page Apps for GitHub Pages
+      // https://github.com/rafrex/spa-github-pages
+      (function() {
+        var l = window.location;
+        var repoBase = '/feedback-evaluation-system';
+        // Number of path segments to keep after domain (1 for Project Pages repo name)
+        var pathSegmentsToKeep = 1;
+        var path = l.pathname.split('/').slice(1 + pathSegmentsToKeep).join('/');
+        var search = l.search.replace(/\?/g, '&');
+        l.replace(
+          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + repoBase + '/?/' +
+          path + (search ? '&' + search : '') + l.hash
+        );
+      })();
+    </script>
+  </head>
+  <body>
+    Redirecting…
+  </body>
+</html>
