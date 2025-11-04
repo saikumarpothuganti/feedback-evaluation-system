@@ -79,7 +79,13 @@ const Chatbot = () => {
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
 
-    // Try AI backend first; if it fails, fall back to rule-based reply
+    // For now, use rule-based replies since we don't have a deployed AI backend
+    // In production, you would need to deploy the backend server to a cloud service
+    const fallback = getBotReply(text);
+    setMessages((prev) => [...prev, { sender: 'bot', text: fallback, ts: Date.now() }]);
+    
+    /* 
+    // Uncomment this when you have a deployed backend API
     void (async () => {
       try {
         const history = messages.concat(userMsg).slice(-10);
@@ -93,7 +99,9 @@ const Chatbot = () => {
           `User: ${currentUser || 'guest'}, Role: ${userRole || 'anonymous'}. ` +
           `Be concise; when navigation is needed, suggest specific pages (Login, Student, Faculty, Admin, Dashboard, Reports, Profile, Settings, Notifications, Help).`;
 
-        const resp = await fetch('http://localhost:8787/api/chat', {
+        // Use environment variable for API URL
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8787';
+        const resp = await fetch(`${apiUrl}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ messages: toAI, system }),
@@ -113,6 +121,7 @@ const Chatbot = () => {
         setMessages((prev) => [...prev, { sender: 'bot', text: fallback, ts: Date.now() }]);
       }
     })();
+    */
   };
 
   const handleKeyDown = (e) => {
