@@ -95,9 +95,10 @@ const Faculty = () => {
                 required
               >
                 <option value="" disabled>Select Academic Year</option>
-                <option value="2023-2024">2023-2024</option>
-                <option value="2022-2023">2022-2023</option>
-                <option value="2021-2022">2021-2022</option>
+                <option value="2024-2025">2024-2025</option>
+                <option value="2025-2026">2025-2026</option>
+                <option value="2026-2027">2026-2027</option>
+                <option value="2027-2028">2027-2028</option>
               </select>
             </div>
             
@@ -109,8 +110,8 @@ const Faculty = () => {
                 required
               >
                 <option value="" disabled>Select Semester</option>
-                <option value="Fall">Fall</option>
-                <option value="Spring">Spring</option>
+                <option value="Odd">Odd</option>
+                <option value="Even">Even</option>
                 <option value="Summer">Summer</option>
               </select>
             </div>
