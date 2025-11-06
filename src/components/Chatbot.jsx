@@ -78,45 +78,9 @@ const Chatbot = () => {
     const userMsg = { sender: 'user', text, ts: Date.now() };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
-
-    // Connect to Railway backend
-    void (async () => {
-      try {
-        const history = messages.concat(userMsg).slice(-10);
-        const toAI = history.map((m) => ({
-          role: m.sender === 'user' ? 'user' : 'assistant',
-          content: m.text,
-        }));
-
-        const system = `You are a helpful assistant for a Student Feedback Management System.\n` +
-          `Current route: ${location.pathname}. ` +
-          `User: ${currentUser || 'guest'}, Role: ${userRole || 'anonymous'}. ` +
-          `Be concise; when navigation is needed, suggest specific pages (Login, Student, Faculty, Admin, Dashboard, Reports, Profile, Settings, Notifications, Help).`;
-
-        // TODO: Replace this URL with your Railway deployment URL
-        // Get it from Railway: Settings -> Networking -> Generate Domain
-        const apiUrl = import.meta.env.VITE_API_URL || 'https://YOUR-RAILWAY-URL.up.railway.app';
-        
-        const resp = await fetch(`${apiUrl}/api/chat`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: toAI, system }),
-        });
-
-        if (resp.ok) {
-          const data = await resp.json();
-          const reply = data?.reply || getBotReply(text);
-          setMessages((prev) => [...prev, { sender: 'bot', text: reply, ts: Date.now() }]);
-          return;
-        }
-        // Non-OK -> fallback
-        const fallback = getBotReply(text);
-        setMessages((prev) => [...prev, { sender: 'bot', text: fallback, ts: Date.now() }]);
-      } catch {
-        const fallback = getBotReply(text);
-        setMessages((prev) => [...prev, { sender: 'bot', text: fallback, ts: Date.now() }]);
-      }
-    })();
+    // Client-only chatbot (no backend). Uses rule-based responses for GitHub Pages.
+    const fallback = getBotReply(text);
+    setMessages((prev) => [...prev, { sender: 'bot', text: fallback, ts: Date.now() }]);
   };
 
   const handleKeyDown = (e) => {
