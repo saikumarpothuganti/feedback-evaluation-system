@@ -6,7 +6,7 @@ const Admin = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [displayedFeedbacks, setDisplayedFeedbacks] = useState([]);
   
-  const { feedbacks, getFilteredFeedbacks, deleteFeedback } = useFeedback();
+  const { feedbacks, getFilteredFeedbacks, deleteFeedback, flagFeedback } = useFeedback();
 
   useEffect(() => {
     setDisplayedFeedbacks(getFilteredFeedbacks(activeFilter));
@@ -65,6 +65,14 @@ const Admin = () => {
       default:
         return '';
     }
+  };
+
+  // Simple bad comment detector: list of disallowed words (case-insensitive)
+  const BAD_WORDS = ['abuse','spam','idiot','stupid','hate'];
+  const hasBadComment = (text) => {
+    if (!text) return false;
+    const lower = text.toLowerCase();
+    return BAD_WORDS.some(w => lower.includes(w));
   };
 
   // --- Analytics computations ---
@@ -219,8 +227,20 @@ const Admin = () => {
                   )}
                   
                   {feedback.comments && (
-                    <div className="feedback-comment">
+                    <div className="feedback-comment" style={{ position:'relative' }}>
                       <strong>Comments:</strong> {feedback.comments}
+                      {feedback.flagged && (
+                        <div style={{
+                          marginTop:8,
+                          padding:'6px 10px',
+                          background:'rgba(255,0,0,0.15)',
+                          border:'1px solid rgba(255,0,0,0.4)',
+                          borderRadius:6,
+                          fontSize:12
+                        }}>
+                          ⚠️ This comment has been reported for inappropriate language.
+                        </div>
+                      )}
                     </div>
                   )}
                   
@@ -246,6 +266,18 @@ const Admin = () => {
                   )}
 
                   <div className="feedback-actions" style={{ marginTop: 12, display: 'flex', gap: 8 }}>
+                    {hasBadComment(feedback.comments) && !feedback.flagged && (
+                      <button
+                        className="btn btn-warning"
+                        onClick={() => {
+                          if (window.confirm('Report this comment as inappropriate?')) {
+                            flagFeedback(feedback.id);
+                          }
+                        }}
+                      >
+                        Report
+                      </button>
+                    )}
                     <button
                       className="btn btn-danger"
                       onClick={() => {

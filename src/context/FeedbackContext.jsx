@@ -84,10 +84,26 @@ export const FeedbackProvider = ({ children }) => {
     saveToLocalStorage({ feedbacks: updated });
   };
 
+  const flagFeedback = (id) => {
+    const updated = feedbacks.map(f => {
+      if (f.id === id) {
+        return {
+          ...f,
+            flagged: true,
+            flaggedTimestamp: new Date().toISOString()
+        };
+      }
+      return f;
+    });
+    setFeedbacks(updated);
+    saveToLocalStorage({ feedbacks: updated });
+  };
+
   const value = {
     feedbacks,
     addFeedback,
     deleteFeedback,
+    flagFeedback,
     getFeedbackStats,
     getFilteredFeedbacks,
     IMPROVEMENT_LABELS
