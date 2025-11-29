@@ -16,14 +16,16 @@ import Help from './components/Help.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Chatbot from './components/Chatbot.jsx';
 import Register from './components/Register.jsx';
+import SiteAuth from './components/SiteAuth.jsx';
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <FeedbackProvider>
-          <Router basename={import.meta.env.BASE_URL}>
-          <div className="App">
+    <SiteAuth>
+      <ThemeProvider>
+        <AuthProvider>
+          <FeedbackProvider>
+            <Router basename={import.meta.env.BASE_URL}>
+            <div className="App">
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
@@ -108,6 +110,7 @@ function App() {
         </FeedbackProvider>
       </AuthProvider>
     </ThemeProvider>
+    </SiteAuth>
   );
 }
 
