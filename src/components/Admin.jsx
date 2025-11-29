@@ -146,7 +146,7 @@ const Admin = () => {
             <div className="method-distribution" style={{ marginTop: 20 }}>
               <h4>Method Distribution</h4>
               <div className="method-rows" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {['academics','hostel','disciplinary','academic'].map(key => (
+                {['academics','hostel','disciplinary'].map(key => (
                   <div key={key} className="method-row" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <span style={{ minWidth: 100, textTransform: 'capitalize' }}>{key}</span>
                     <div style={{ flex: 1, background: 'rgba(255,255,255,0.1)', height: 10, borderRadius: 6, overflow: 'hidden' }}>
