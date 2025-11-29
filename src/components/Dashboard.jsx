@@ -12,7 +12,8 @@ import Navbar from './Navbar.jsx';
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
-  const { getFeedbackStats, feedback } = useFeedback();
+  // Correctly obtain feedbacks array from context
+  const { getFeedbackStats, feedbacks } = useFeedback();
   const { currentUser, userRole } = useAuth();
   const [quote, setQuote] = useState({ text: 'Education is the most powerful weapon...', author: 'Nelson Mandela' });
   
@@ -39,12 +40,44 @@ const Dashboard = () => {
   };
 
   // Rating distribution
+  // Rating distribution (1-5) derived from feedbacks
   const ratingCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-  feedback.forEach(fb => {
-    if (fb.rating >= 1 && fb.rating <= 5) {
-      ratingCounts[fb.rating]++;
+  (feedbacks || []).forEach(fb => {
+    const r = Number(fb.rating);
+    if (r >= 1 && r <= 5) {
+      ratingCounts[r]++;
     }
   });
+
+  // Method distribution (academics / hostel / disciplinary)
+  const methodCounts = { academics: 0, hostel: 0, disciplinary: 0 };
+  (feedbacks || []).forEach(fb => {
+    const m = (fb.method || fb.feedbackType || '').toLowerCase();
+    if (methodCounts[m] !== undefined) methodCounts[m]++;
+  });
+
+  const methodLabels = ['Academics', 'Hostel', 'Disciplinary'];
+  const methodDataSet = [methodCounts.academics, methodCounts.hostel, methodCounts.disciplinary];
+
+  const methodPieData = {
+    labels: methodLabels,
+    datasets: [
+      {
+        data: methodDataSet,
+        backgroundColor: [
+          'rgba(110,142,251,0.8)',
+          'rgba(167,119,227,0.8)',
+          'rgba(255,184,77,0.8)'
+        ],
+        borderColor: [
+          'rgba(110,142,251,1)',
+          'rgba(167,119,227,1)',
+          'rgba(255,184,77,1)'
+        ],
+        borderWidth: 2
+      }
+    ]
+  };
 
   const barData = {
     labels: ['1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars'],
@@ -123,12 +156,28 @@ const Dashboard = () => {
           {stats.total > 0 && (
             <motion.div className="charts-container" variants={itemVariants}>
               <div className="chart-wrapper">
-                <h3>Feedback Distribution</h3>
+                <h3>Role Distribution</h3>
                 <Pie data={pieData} options={{ maintainAspectRatio: true, responsive: true }} />
               </div>
               <div className="chart-wrapper">
                 <h3>Rating Distribution</h3>
                 <Bar data={barData} options={{ maintainAspectRatio: true, responsive: true, scales: { y: { beginAtZero: true } } }} />
+              </div>
+              <div className="chart-wrapper">
+                <h3>Method Distribution</h3>
+                <Pie data={methodPieData} options={{ maintainAspectRatio: true, responsive: true }} />
+                <div className="chart-legend">
+                  {methodLabels.map((label, idx) => {
+                    const count = methodDataSet[idx];
+                    const pct = stats.total ? ((count / stats.total) * 100).toFixed(1) : 0;
+                    return (
+                      <div key={label} className="legend-row">
+                        <span>{label}</span>
+                        <span>{count} ({pct}%)</span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </motion.div>
           )}
