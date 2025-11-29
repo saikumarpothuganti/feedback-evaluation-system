@@ -14,7 +14,7 @@ const Faculty = () => {
   });
 
   const { addFeedback } = useFeedback();
-  const { userRole } = useAuth();
+  const { userRole, currentUser } = useAuth();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -37,11 +37,12 @@ const Faculty = () => {
       return;
     }
 
-    // Create feedback object
+    // Create feedback object with user info
     const feedback = {
       ...formData,
       feedbackType: 'academic',
       userRole: userRole,
+      submittedBy: currentUser,
       method: 'faculty'
     };
 

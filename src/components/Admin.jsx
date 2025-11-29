@@ -116,6 +116,11 @@ const Admin = () => {
                     <span className="feedback-date">
                       {formatDate(feedback.timestamp)}
                     </span>
+                    {feedback.submittedBy && (
+                      <span style={{ marginLeft: 12, opacity: 0.8 }}>
+                        👤 {feedback.submittedBy}
+                      </span>
+                    )}
                     {feedback.rating && (
                       <div className="feedback-rating">
                         {renderStars(feedback.rating)}

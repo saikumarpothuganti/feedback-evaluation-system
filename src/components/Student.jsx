@@ -49,11 +49,12 @@ const Student = () => {
       return;
     }
 
-    // Create feedback object
+    // Create feedback object with user info
     const feedback = {
       ...formData,
       feedbackType: selectedMethod,
       userRole: userRole,
+      submittedBy: currentUser,
       method: selectedMethod
     };
 
