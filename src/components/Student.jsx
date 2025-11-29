@@ -22,7 +22,7 @@ const Student = () => {
   const [success, setSuccess] = useState('');
 
   const { addFeedback } = useFeedback();
-  const { userRole } = useAuth();
+  const { userRole, currentUser } = useAuth();
   const navigate = useNavigate();
 
   const handleMethodSelection = (method) => {
@@ -234,7 +234,14 @@ const Student = () => {
                 <button type="button" className="btn btn-secondary" onClick={handleBack}>
                   Back
                 </button>
-                <button type="submit" className="btn" aria-label="Submit Feedback">Submit Feedback</button>
+                <button
+                  type="submit"
+                  className="btn"
+                  aria-label="Submit Feedback"
+                  disabled={!selectedMethod || !formData.rating || !formData.comments}
+                >
+                  Submit Feedback
+                </button>
               </div>
             </form>
           </div>
