@@ -46,9 +46,15 @@ const Faculty = () => {
       method: 'faculty'
     };
 
-    // Add feedback
-    addFeedback(feedback);
-    setSuccess('Academic feedback submitted successfully!');
+    // Add feedback with error handling
+    try {
+      addFeedback(feedback);
+      setSuccess('Academic feedback submitted successfully!');
+    } catch (err) {
+      console.error('Failed to submit academic feedback:', err);
+      setError('Something went wrong submitting feedback. Please try again.');
+      return;
+    }
     
     // Reset form
     setFormData({
@@ -144,7 +150,7 @@ const Faculty = () => {
               <label htmlFor="outcomes">Expected Learning Outcomes</label>
             </div>
             
-            <button type="submit" className="btn">Submit Academic Feedback</button>
+            <button type="submit" className="btn" aria-label="Submit Academic Feedback">Submit Academic Feedback</button>
           </form>
         </div>
       </div>

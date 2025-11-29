@@ -44,6 +44,10 @@ const Student = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
+    if (!selectedMethod) {
+      setError('Please select a feedback method (Academics, Hostel, or Disciplinary).');
+      return;
+    }
     if (!formData.rating || !formData.comments) {
       setError('Please provide a rating and comments.');
       return;
@@ -59,8 +63,14 @@ const Student = () => {
     };
 
     // Add feedback
-    addFeedback(feedback);
-    setSuccess('Feedback submitted successfully!');
+    try {
+      addFeedback(feedback);
+      setSuccess('Feedback submitted successfully!');
+    } catch (err) {
+      console.error('Failed to submit feedback:', err);
+      setError('Something went wrong submitting feedback. Please try again.');
+      return;
+    }
     
     // Reset form
     setFormData({
@@ -224,7 +234,7 @@ const Student = () => {
                 <button type="button" className="btn btn-secondary" onClick={handleBack}>
                   Back
                 </button>
-                <button type="submit" className="btn">Submit Feedback</button>
+                <button type="submit" className="btn" aria-label="Submit Feedback">Submit Feedback</button>
               </div>
             </form>
           </div>
