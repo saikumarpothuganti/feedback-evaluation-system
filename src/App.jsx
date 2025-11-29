@@ -23,7 +23,7 @@ function App() {
       <AuthProvider>
         <FeedbackProvider>
           <Router basename={import.meta.env.BASE_URL}>
-          <div className="App">
+          <div className="App" style={{ minHeight: '100vh' }}>
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
