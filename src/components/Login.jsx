@@ -10,6 +10,18 @@ const Login = () => {
     password: ''
   });
   const [error, setError] = useState('');
+  // Captcha state
+  const [captcha, setCaptcha] = useState({ a: 0, b: 0, answer: '' });
+  const [captchaError, setCaptchaError] = useState('');
+
+  // Generate new captcha
+  const generateCaptcha = () => {
+    const a = Math.floor(Math.random() * 10) + 1;
+    const b = Math.floor(Math.random() * 10) + 1;
+    setCaptcha({ a, b, answer: '' });
+    setCaptchaError('');
+  };
+  React.useEffect(() => { generateCaptcha(); }, []);
     const users = useMemo(() => {
       try {
         const raw = localStorage.getItem('registeredUsers');
@@ -36,8 +48,20 @@ const Login = () => {
     setError('');
   };
 
+  const handleCaptchaChange = (e) => {
+    setCaptcha(prev => ({ ...prev, answer: e.target.value }));
+    setCaptchaError('');
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Captcha validation
+    if (parseInt(captcha.answer) !== captcha.a + captcha.b) {
+      setCaptchaError('Captcha answer is incorrect.');
+      return;
+    } else {
+      setCaptchaError('');
+    }
     const uname = formData.username.trim();
     const pwd = formData.password;
 
@@ -142,6 +166,30 @@ const Login = () => {
                 <label htmlFor="password">Password</label>
               </div>
               {error && (<p style={{ color: '#ffd700', marginTop: 8 }}>{error}</p>)}
+              <div className="form-group captcha-group" style={{ marginTop: 18, marginBottom: 18 }}>
+                <div style={{ display: 'flex', gap: 16 }}>
+                  <div style={{ background: '#f5f6fa', border: '1px solid #b3b3e6', borderRadius: 8, padding: '10px 18px', fontWeight: 500, fontSize: 16, color: '#222', minWidth: 180 }}>
+                    <span style={{ color: '#6e8efb', fontWeight: 700 }}>Captcha:</span> What is <span style={{ fontWeight: 700 }}>{captcha.a} + {captcha.b}</span>?
+                  </div>
+                  <div style={{ background: '#f5f6fa', border: '1px solid #b3b3e6', borderRadius: 8, padding: '10px 18px', display: 'flex', alignItems: 'center', minWidth: 60, justifyContent: 'center' }}>
+                    <button type="button" className="btn btn-secondary" style={{ fontSize: 18, padding: '2px 10px', background: 'none', border: 'none', color: '#6e8efb', cursor: 'pointer' }} onClick={generateCaptcha} aria-label="Refresh captcha">↻</button>
+                  </div>
+                </div>
+                <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <input
+                    type="number"
+                    name="captcha"
+                    value={captcha.answer}
+                    onChange={handleCaptchaChange}
+                    required
+                    min="0"
+                    style={{ width: 120, fontSize: 16, padding: '6px 10px', borderRadius: 6, border: '1px solid #b3b3e6' }}
+                    aria-label="Enter captcha answer"
+                    placeholder="Enter answer"
+                  />
+                  {captchaError && <div style={{ color: '#ff4d4f', fontWeight: 500, marginTop: 6 }}>{captchaError}</div>}
+                </div>
+              </div>
               <button type="submit" className="btn">Login</button>
             </form>
             <div className="info-text">
