@@ -52,6 +52,16 @@ const Student = () => {
       setError('Please provide a rating and comments.');
       return;
     }
+    if (!currentUser) {
+      setError('You must be logged in to submit feedback. Please login and try again.');
+      return;
+    }
+
+    const ratingValue = Number(formData.rating);
+    if (Number.isNaN(ratingValue) || ratingValue < 1 || ratingValue > 5) {
+      setError('Rating must be a number between 1 and 5.');
+      return;
+    }
 
     // Create feedback object with user info
     const feedback = {
@@ -59,6 +69,8 @@ const Student = () => {
       feedbackType: selectedMethod,
       userRole: userRole,
       submittedBy: currentUser,
+      rating: ratingValue,
+      comments: (formData.comments || '').trim(),
       method: selectedMethod
     };
 
@@ -66,6 +78,7 @@ const Student = () => {
     try {
       addFeedback(feedback);
       setSuccess('Feedback submitted successfully!');
+      setError('');
     } catch (err) {
       console.error('Failed to submit feedback:', err);
       setError('Something went wrong submitting feedback. Please try again.');
