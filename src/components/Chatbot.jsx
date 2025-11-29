@@ -72,13 +72,34 @@ const Chatbot = () => {
     }
   }, [messages, open]);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const text = input.trim();
     if (!text) return;
     const userMsg = { sender: 'user', text, ts: Date.now() };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
-    // Client-only chatbot (no backend). Uses rule-based responses for GitHub Pages.
+    // Try AI backend if configured, else fallback to rule-based
+    const apiUrl = import.meta.env.VITE_CHATBOT_API_URL;
+    if (apiUrl) {
+      try {
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: text,
+            user: currentUser || 'guest',
+            role: userRole || 'anonymous'
+          })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const reply = (data && (data.reply || data.message || data.text)) || getBotReply(text);
+        setMessages((prev) => [...prev, { sender: 'bot', text: reply, ts: Date.now() }]);
+        return;
+      } catch (err) {
+        setMessages((prev) => [...prev, { sender: 'bot', text: 'AI service unavailable. Using fallback.', ts: Date.now() }]);
+      }
+    }
     const fallback = getBotReply(text);
     setMessages((prev) => [...prev, { sender: 'bot', text: fallback, ts: Date.now() }]);
   };

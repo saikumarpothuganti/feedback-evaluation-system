@@ -17,7 +17,7 @@ const Dashboard = () => {
   const [quote, setQuote] = useState({ text: 'Education is the most powerful weapon...', author: 'Nelson Mandela' });
   
   // Fetch motivational quote from API (API Integration rubric)
-  const { data: quoteData, loading: quoteLoading } = useFetch('https://api.quotable.io/random?tags=education');
+  const { data: quoteData, loading: quoteLoading, error: quoteError } = useFetch('https://api.quotable.io/random?tags=education');
   
   useEffect(() => {
     if (quoteData) {
@@ -88,9 +88,11 @@ const Dashboard = () => {
           
           {/* Motivational Quote - API Integration */}
           <motion.div className="quote-card" variants={itemVariants}>
-            {quoteLoading ? (
-              <p className="loading">Loading inspiration...</p>
-            ) : (
+            {quoteLoading && <p className="loading">Loading inspiration...</p>}
+            {!quoteLoading && quoteError && (
+              <p className="error" style={{ color: '#ffd700' }}>Couldn’t load quote. Showing a default.</p>
+            )}
+            {!quoteLoading && !quoteError && (
               <>
                 <p className="quote-text">"{quote.text}"</p>
                 <p className="quote-author">— {quote.author}</p>

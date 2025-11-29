@@ -15,12 +15,16 @@ const Faculty = () => {
 
   const { addFeedback } = useFeedback();
   const { userRole } = useAuth();
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    setError('');
+    setSuccess('');
   };
 
   const handleSubmit = (e) => {
@@ -29,7 +33,7 @@ const Faculty = () => {
     // Validate required fields
     if (!formData.departmentName || !formData.subjectName || !formData.academicYear || 
         !formData.semester || !formData.suggestions || !formData.outcomes) {
-      alert('Please fill in all fields');
+      setError('Please fill in all fields.');
       return;
     }
 
@@ -43,8 +47,7 @@ const Faculty = () => {
 
     // Add feedback
     addFeedback(feedback);
-    
-    alert('Academic feedback submitted successfully!');
+    setSuccess('Academic feedback submitted successfully!');
     
     // Reset form
     setFormData({
@@ -65,6 +68,8 @@ const Faculty = () => {
         <div className="card feedback-card">
           <h2>Submit Academic Feedback</h2>
           <form onSubmit={handleSubmit}>
+            {error && <p style={{ color: '#ffd700' }}>{error}</p>}
+            {success && <p style={{ color: '#6efb8e' }}>{success}</p>}
             <div className="form-group">
               <input 
                 type="text" 

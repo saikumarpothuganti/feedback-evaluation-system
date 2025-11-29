@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -9,6 +9,15 @@ const Login = () => {
     username: '',
     password: ''
   });
+  const [error, setError] = useState('');
+    const users = useMemo(() => {
+      try {
+        const raw = localStorage.getItem('registeredUsers');
+        return raw ? JSON.parse(raw) : [];
+      } catch {
+        return [];
+      }
+    }, []);
   
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -16,6 +25,7 @@ const Login = () => {
   const handleRoleSelection = (role) => {
     setSelectedRole(role);
     setShowLoginForm(true);
+    setError('');
   };
 
   const handleInputChange = (e) => {
@@ -23,26 +33,40 @@ const Login = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+    setError('');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if (!formData.username || !formData.password) {
-      alert('Please fill in all fields');
+    const uname = formData.username.trim();
+    const pwd = formData.password;
+
+    if (!uname || !pwd) {
+      setError('Please enter both username and password.');
       return;
     }
 
-    // Determine user role based on selection and username
-    let userRole = selectedRole;
-    if (formData.username.toLowerCase().includes('admin')) {
-      userRole = 'admin';
+    // Find user in localStorage (front-end demo authentication)
+    const found = users.find(u => u.username.toLowerCase() === uname.toLowerCase());
+    if (!found) {
+      setError('Account not found. Please register first.');
+      return;
     }
 
-    // Login user
-    login(formData.username, userRole);
+    if (found.password !== pwd) {
+      setError('Incorrect password. Please try again.');
+      return;
+    }
 
-    // Redirect based on role
+    // If a role was selected, ensure it matches; else use stored role
+    const userRole = selectedRole || found.role;
+    if (selectedRole && selectedRole !== found.role) {
+      setError(`You registered as ${found.role}. Please select the correct role.`);
+      return;
+    }
+
+    // Login and route by role
+    login(found.username, userRole);
     switch (userRole) {
       case 'student':
         navigate('/student');
@@ -117,6 +141,7 @@ const Login = () => {
                 />
                 <label htmlFor="password">Password</label>
               </div>
+              {error && (<p style={{ color: '#ffd700', marginTop: 8 }}>{error}</p>)}
               <button type="submit" className="btn">Login</button>
             </form>
             <div className="info-text">

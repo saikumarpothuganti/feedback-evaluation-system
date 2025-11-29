@@ -18,6 +18,8 @@ const Student = () => {
     rating: '',
     comments: ''
   });
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const { addFeedback } = useFeedback();
   const { userRole } = useAuth();
@@ -26,6 +28,8 @@ const Student = () => {
   const handleMethodSelection = (method) => {
     setSelectedMethod(method);
     setShowForm(true);
+    setError('');
+    setSuccess('');
   };
 
   const handleInputChange = (e) => {
@@ -33,13 +37,15 @@ const Student = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+    setError('');
+    setSuccess('');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     
     if (!formData.rating || !formData.comments) {
-      alert('Please fill in rating and comments');
+      setError('Please provide a rating and comments.');
       return;
     }
 
@@ -53,8 +59,7 @@ const Student = () => {
 
     // Add feedback
     addFeedback(feedback);
-    
-    alert('Feedback submitted successfully!');
+    setSuccess('Feedback submitted successfully!');
     
     // Reset form
     setFormData({
@@ -123,6 +128,8 @@ const Student = () => {
           <div className="card feedback-card">
             <h2>Submit Course Feedback</h2>
             <form onSubmit={handleSubmit}>
+              {error && <p style={{ color: '#ffd700' }}>{error}</p>}
+              {success && <p style={{ color: '#6efb8e' }}>{success}</p>}
               {selectedMethod === 'academics' && (
                 <div className="academic-fields">
                   <div className="form-group">

@@ -11,20 +11,19 @@ export function useFetch(url, options = {}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchData = async () => {
+  const fetchData = async (signal) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(url, options);
-      
+      const response = await fetch(url, { ...options, signal });
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
       const result = await response.json();
       setData(result);
     } catch (err) {
-      setError(err.message);
+      if (err.name === 'AbortError') return; // silently ignore aborted requests
+      setError(err.message || 'Unknown error');
       console.error('Fetch error:', err);
     } finally {
       setLoading(false);
@@ -32,8 +31,17 @@ export function useFetch(url, options = {}) {
   };
 
   useEffect(() => {
-    fetchData();
+    const controller = new AbortController();
+    fetchData(controller.signal);
+    return () => controller.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
-  return { data, loading, error, refetch: fetchData };
+  const refetch = () => {
+    const controller = new AbortController();
+    fetchData(controller.signal);
+    return () => controller.abort();
+  };
+
+  return { data, loading, error, refetch };
 }
