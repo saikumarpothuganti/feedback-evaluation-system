@@ -78,9 +78,16 @@ export const FeedbackProvider = ({ children }) => {
     return feedbacks.filter(f => f.userRole === filter);
   };
 
+  const deleteFeedback = (id) => {
+    const updated = feedbacks.filter(f => f.id !== id);
+    setFeedbacks(updated);
+    saveToLocalStorage({ feedbacks: updated });
+  };
+
   const value = {
     feedbacks,
     addFeedback,
+    deleteFeedback,
     getFeedbackStats,
     getFilteredFeedbacks,
     IMPROVEMENT_LABELS

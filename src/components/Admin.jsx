@@ -6,7 +6,7 @@ const Admin = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [displayedFeedbacks, setDisplayedFeedbacks] = useState([]);
   
-  const { feedbacks, getFilteredFeedbacks } = useFeedback();
+  const { feedbacks, getFilteredFeedbacks, deleteFeedback } = useFeedback();
 
   useEffect(() => {
     setDisplayedFeedbacks(getFilteredFeedbacks(activeFilter));
@@ -155,6 +155,19 @@ const Admin = () => {
                       )}
                     </div>
                   )}
+
+                  <div className="feedback-actions" style={{ marginTop: 12, display: 'flex', gap: 8 }}>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => {
+                        if (window.confirm('Delete this feedback? This action cannot be undone.')) {
+                          deleteFeedback(feedback.id);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))
             )}
