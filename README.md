@@ -1,50 +1,24 @@
-﻿# Student Feedback Management System
+# Frontend Repository
 
-A feature-rich Student Feedback Management System built with React + Vite for frontend and Spring Boot + MySQL for backend.
+React + Vite frontend for Student Feedback Management System.
 
-## Features
+## Run locally
 
-- Role-based access for Student, Faculty, and Admin
-- Feedback submission workflows
-- Dashboard analytics and reports
-- Responsive UI with charts and animations
+1. Install dependencies:
+   npm install
+2. Start dev server:
+   npm run dev
+3. Build for production:
+   npm run build
 
-## Quick Start
+## Docker
 
-```bash
-# Install frontend dependencies
-npm install
+Build and run frontend container from this folder:
 
-# Run frontend only
-npm run dev
-
-# Run Spring Boot backend only
-npm run spring:dev
-
-# Run frontend + Spring Boot together
-npm run dev:spring
+```
+docker build -f Dockerfile.frontend -t feedback-frontend .
+docker run -p 80:80 feedback-frontend
 ```
 
-## Backend (Spring Boot Only)
-
-Backend is implemented only with Spring Boot under `backend/`.
-
-Endpoints:
-- GET `/api/health`
-- POST `/api/feedback`
-
-Requirements:
-- Java 21
-- Maven 3.9+
-- MySQL 8+
-
-Run backend directly:
-
-```bash
-cd backend
-mvn spring-boot:run
-```
-
-## Tech Stack
-
-React 18, Vite, React Router, Context API, Chart.js, Framer Motion, Spring Boot, MySQL
+The Nginx config proxies /api calls to http://host.docker.internal:8080.
+Update nginx/default.conf if your backend URL is different.

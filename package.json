@@ -6,8 +6,6 @@
   "scripts": {
     "dev": "vite --open",
     "start": "npm run dev",
-    "spring:dev": "mvn -f backend/pom.xml spring-boot:run",
-    "dev:spring": "concurrently \"npm run spring:dev\" \"npm run dev\"",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -34,7 +32,6 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^3.1.0",
-    "concurrently": "^8.2.2",
     "vite": "^4.1.0"
   }
 }
